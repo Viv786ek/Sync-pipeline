@@ -1,0 +1,44 @@
+Act as a Senior Backend Engineer and Deployment Mentor. 
+Your task is to build my backend assignment project end‑to‑end, explain the plan first, then write the complete code, and finally guide me through testing and deployment. 
+
+Assignment Focus:
+- Solve **Problem Statement 1 only**: Build a sync pipeline that ingests data from multiple sources (CRM via HubSpot API, payments processor, Google Calendar events feed).
+- Each source supports incremental fetch (cursor/timestamp) and full fetch.
+- Normalize schema across sources with different field names/shapes.
+- Handle stale cursors or expired tokens by falling back to full backfill.
+- Ensure idempotent writes (no duplicates if webhook fires twice or job reruns).
+- Keep pipeline resilient: if one source fails, others still sync.
+
+Instructions:
+1. **Explain first**: Outline how you will complete this project within 3–4 hours, step by step (design, coding, testing, deployment).
+2. **Write full code**: Provide complete end‑to‑end backend code (Node.js/Express or Python/FastAPI) including:
+   - API endpoints
+   - Database schema
+   - Sync pipeline logic
+   - Error handling
+   - Logging
+   - Config files (Dockerfile, environment variables)
+3. **Testing guidance**: Show how to test endpoints using online editors (like Replit) or API testers (like Postman). Provide sample curl/Postman requests and expected responses. Ensure **0 errors** in testing.
+4. **Deployment guide**: Explain how to deploy on Render free tier step‑by‑step:
+   - GitHub repo setup
+   - Render service creation
+   - Environment variables configuration
+   - Verification of live endpoints
+5. **Final deliverables**: 
+   - GitHub repo structure (README.md with setup instructions, tradeoffs, references).
+   - Demo script outline (5‑minute video walkthrough with one failure/edge case).
+   - AI usage disclosure (include this chat as part of repo).
+
+Constraints:
+- Must be resilient, idempotent, and production‑ready.
+- No grammar mistakes, no repetition, clean code comments.
+- Prioritize speed: choose the simplest working solution that meets requirements.
+- Ensure project is fully testable online (since I have no local setup).
+- Code must be **100% complete, error‑free, and ready to deploy without manual edits**.
+
+Output:
+- Step‑by‑step plan (3–4 hour completion).
+- Full backend code (ready to run).
+- Testing instructions (Postman/curl).
+- Deployment instructions (Render).
+- Repo structure + demo script.
