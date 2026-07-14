@@ -36,7 +36,7 @@ export async function syncStripe(): Promise<{
   }
 
   const stripe = new Stripe(config.stripeSecretKey, {
-    apiVersion: "2025-05-28.basil",
+    apiVersion: "2026-06-24.dahlia",
     // Pinning the version keeps the schema stable even when Stripe publishes breaking changes
   });
 
@@ -55,16 +55,14 @@ export async function syncStripe(): Promise<{
 
     const syncedAt = Math.floor(Date.now() / 1000); // Unix seconds
 
-    // Stripe auto-paginates via the SDK iterator
-    const iter = stripe.paymentIntents.list({
+    // Stripe supports async iteration directly on the list response
+    const records: ReturnType<typeof normalizeStripePaymentIntent>[] = [];
+    await stripe.paymentIntents.list({
       limit: 100,
       ...(createdGt ? { created: { gt: createdGt } } : {}),
-    });
-
-    const records = [];
-    for await (const pi of iter.autoPagingEach()) {
+    }).autoPagingEach((pi) => {
       records.push(normalizeStripePaymentIntent(pi));
-    }
+    });
 
     const written = await upsertRecords(records);
 

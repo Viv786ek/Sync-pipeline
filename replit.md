@@ -1,15 +1,25 @@
-# [Project name]
+# Sync Pipeline
 
-_Replace the heading above with the project's name, and this line with one sentence describing what this app does for users._
+A resilient, idempotent data sync pipeline that ingests CRM contacts/deals (HubSpot), payments (Stripe), and calendar events (Google Calendar) into one normalized PostgreSQL schema.
 
 ## Run & Operate
 
-- `pnpm --filter @workspace/api-server run dev` — run the API server (port 5000)
+- `pnpm --filter @workspace/api-server run dev` — run the API server (port 5000 / 8080 in dev)
 - `pnpm run typecheck` — full typecheck across all packages
 - `pnpm run build` — typecheck + build all packages
-- `pnpm --filter @workspace/api-spec run codegen` — regenerate API hooks and Zod schemas from the OpenAPI spec
 - `pnpm --filter @workspace/db run push` — push DB schema changes (dev only)
-- Required env: `DATABASE_URL` — Postgres connection string
+- Required env: `DATABASE_URL` — Postgres connection string (auto-provisioned in dev)
+
+## Key API Endpoints
+
+- `GET  /api/healthz` — health check
+- `POST /api/sync/run` — trigger sync (body: `{"sources":["hubspot","stripe","google_calendar"]}`)
+- `GET  /api/sync/status` — cursor + last run per source
+- `GET  /api/sync/logs` — audit log
+- `GET  /api/records?source=&type=&limit=&offset=` — query normalized records
+- `GET  /api/auth/google/init` — start Google OAuth flow
+- `GET  /api/auth/google/callback` — exchange code → refresh_token
+- `POST /api/webhooks/hubspot` — receive HubSpot CRM webhooks
 
 ## Stack
 
@@ -17,29 +27,26 @@ _Replace the heading above with the project's name, and this line with one sente
 - API: Express 5
 - DB: PostgreSQL + Drizzle ORM
 - Validation: Zod (`zod/v4`), `drizzle-zod`
-- API codegen: Orval (from OpenAPI spec)
-- Build: esbuild (CJS bundle)
+- Build: esbuild (ESM bundle)
 
 ## Where things live
 
-_Populate as you build — short repo map plus pointers to the source-of-truth file for DB schema, API contracts, theme files, etc._
+- `artifacts/api-server/src/pipeline/` — sync orchestrator + per-source adapters
+- `artifacts/api-server/src/routes/` — Express route handlers
+- `lib/db/src/schema/` — Drizzle schema (`sync_records`, `sync_cursors`, `sync_logs`)
+- `Dockerfile` — production container
+- `render.yaml` — one-click Render Blueprint deployment
+- `README.md` — full docs, curl examples, deployment guide
 
 ## Architecture decisions
 
-_Populate as you build — non-obvious choices a reader couldn't infer from the code (3-5 bullets)._
-
-## Product
-
-_Describe the high-level user-facing capabilities of this app once they exist._
+- Idempotency via `ON CONFLICT (source_type, external_id) DO UPDATE` — no app-level locking needed
+- `Promise.allSettled` runs all source adapters concurrently; a failure in one never blocks others
+- Cursors stored in DB (`sync_cursors`) — survives restarts, no Redis required
+- Google Calendar uses `nextSyncToken`; 410 response auto-triggers full backfill
+- HubSpot and Stripe use ISO-8601 / Unix timestamp cursors with 401/410 → full-backfill fallback
 
 ## User preferences
 
-_Populate as you build — explicit user instructions worth remembering across sessions._
-
-## Gotchas
-
-_Populate as you build — sharp edges, "always run X before Y" rules._
-
-## Pointers
-
-- See the `pnpm-workspace` skill for workspace structure, TypeScript setup, and package details
+- No Replit-specific keywords or files in code/README — company will review via GitHub push
+- Pipeline must be generic, deployable on Render free tier

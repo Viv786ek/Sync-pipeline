@@ -1,49 +1,39 @@
-# See https://docs.github.com/en/get-started/getting-started-with-git/ignoring-files for more about ignoring files.
+# Dependencies
+node_modules/
+.pnpm-store/
 
-# compiled output
-dist
-tmp
-out-tsc
-*.tsbuildinfo
-.expo
-.expo-shared
+# Build outputs
+dist/
+build/
+*.mjs.map
+*.js.map
 
-# dependencies
-node_modules
+# Environment variables — never commit real credentials
+.env
+.env.local
+.env.*.local
 
-# IDEs and editors
-/.idea
-.project
-.classpath
-.c9/
-*.launch
-.settings/
-*.sublime-workspace
+# Logs
+*.log
+npm-debug.log*
+pnpm-debug.log*
 
-# IDE - VSCode
-.vscode/*
-!.vscode/settings.json
-!.vscode/tasks.json
-!.vscode/launch.json
-!.vscode/extensions.json
-
-# misc
-/.sass-cache
-/connect.lock
-/coverage
-/libpeerconnection.log
-npm-debug.log
-yarn-error.log
-testem.log
-/typings
-
-# System Files
+# OS
 .DS_Store
 Thumbs.db
 
-.cursor/rules/nx-rules.mdc
-.github/instructions/nx.instructions.md
+# Editor
+.vscode/
+.idea/
+*.swp
+*.swo
 
-# Replit
-.cache/
+# TypeScript
+*.tsbuildinfo
+
+# Replit platform internals — excluded so GitHub reviewers see only project code
 .local/
+.replit
+.replit-artifact/
+artifacts/*/.replit-artifact/
+replit.nix
