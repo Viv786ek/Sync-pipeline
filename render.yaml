@@ -1,0 +1,38 @@
+# Render Blueprint — deploys the sync pipeline + a free PostgreSQL instance
+# Docs: https://render.com/docs/blueprint-spec
+
+databases:
+  - name: sync-pipeline-db
+    databaseName: sync_pipeline
+    user: sync_user
+    plan: free
+
+services:
+  - type: web
+    name: sync-pipeline-api
+    runtime: docker
+    dockerfilePath: ./Dockerfile
+    plan: free
+    healthCheckPath: /api/healthz
+    envVars:
+      - key: DATABASE_URL
+        fromDatabase:
+          name: sync-pipeline-db
+          property: connectionString
+      - key: NODE_ENV
+        value: production
+      - key: PORT
+        value: "5000"
+      # Set these in the Render dashboard (Environment → Secret Files)
+      - key: HUBSPOT_TOKEN
+        sync: false
+      - key: STRIPE_SECRET_KEY
+        sync: false
+      - key: GOOGLE_CLIENT_ID
+        sync: false
+      - key: GOOGLE_CLIENT_SECRET
+        sync: false
+      - key: GOOGLE_REDIRECT_URI
+        sync: false
+      - key: GOOGLE_REFRESH_TOKEN
+        sync: false
