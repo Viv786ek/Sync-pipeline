@@ -1,5 +1,11 @@
 # Render Blueprint — deploys the sync pipeline + a free PostgreSQL instance
 # Docs: https://render.com/docs/blueprint-spec
+#
+# Usage:
+#   1. Push this repo to GitHub
+#   2. Go to render.com → New → Blueprint → connect your GitHub repo
+#   3. Render auto-detects this file and provisions both services
+#   4. In the web service → Environment, fill in the secret vars marked sync:false
 
 databases:
   - name: sync-pipeline-db
@@ -23,7 +29,9 @@ services:
         value: production
       - key: PORT
         value: "5000"
-      # Set these in the Render dashboard (Environment → Secret Files)
+      - key: GOOGLE_CALENDAR_ID
+        value: primary
+      # ── Fill these in the Render dashboard (Environment tab) ──────────────
       - key: HUBSPOT_TOKEN
         sync: false
       - key: STRIPE_SECRET_KEY
@@ -33,6 +41,6 @@ services:
       - key: GOOGLE_CLIENT_SECRET
         sync: false
       - key: GOOGLE_REDIRECT_URI
-        sync: false
+        sync: false        # e.g. https://sync-pipeline-api.onrender.com/api/auth/google/callback
       - key: GOOGLE_REFRESH_TOKEN
         sync: false

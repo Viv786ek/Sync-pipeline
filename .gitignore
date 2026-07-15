@@ -1,39 +1,42 @@
-# Dependencies
+# ── Dependencies ──────────────────────────────────────────────────────────────
 node_modules/
 .pnpm-store/
 
-# Build outputs
+# ── Build outputs ─────────────────────────────────────────────────────────────
 dist/
 build/
 *.mjs.map
 *.js.map
 
-# Environment variables — never commit real credentials
+# ── Environment — never commit real credentials ───────────────────────────────
 .env
 .env.local
 .env.*.local
 
-# Logs
+# ── Logs ──────────────────────────────────────────────────────────────────────
 *.log
 npm-debug.log*
 pnpm-debug.log*
 
-# OS
+# ── OS / editor ───────────────────────────────────────────────────────────────
 .DS_Store
 Thumbs.db
-
-# Editor
 .vscode/
 .idea/
 *.swp
 *.swo
 
-# TypeScript
+# ── TypeScript ────────────────────────────────────────────────────────────────
 *.tsbuildinfo
 
-# Replit platform internals — excluded so GitHub reviewers see only project code
+# ── Platform internals (not relevant to the project code) ────────────────────
 .local/
+.agents/
+.cache/
+replit.md
 .replit
+.replitignore
+attached_assets/
 .replit-artifact/
 artifacts/*/.replit-artifact/
-replit.nix
+artifacts/mockup-sandbox/
